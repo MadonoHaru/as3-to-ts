@@ -1,20 +1,26 @@
 {
   "name": "as3-to-ts",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "description": "Tool to help porting ActionScript 3.0 code to TypeScript.",
-  "main": "index.js",
+  "main": "./lib/index.js",
   "bin": {
     "as3-to-ts": "./bin/as3-to-typescript"
   },
   "scripts": {
-    "install": "typings install && npm run compile",
-    "pretest": "npm run -s compile",
-    "test": "npm run -s generate && npm run -s compare",
-    "generate": "node -r source-map-support/register test-ast/runner generate",
-    "accept": "node -r source-map-support/register test-ast/runner accept",
-    "compare": "node -r source-map-support/register test-ast/runner compare || echo Comparison failed",
-    "compile": "tsc --project src",
-    "watch": "tsc --project src --watch"
+    "rimraf": "rimraf",
+    "pretest": "npm run -s build",
+    "test": "npm run pretest && npm run test:simple && npm run test:compound",
+    "test:simple": "node tests/simple/SimpleTests.js",
+    "test:compound": "node tests/compound/CompoundTests.js",
+    "test:simple:win": "node %NODE_DEBUG_OPTION% tests/simple/SimpleTests.js",
+    "tsc": "tsc",
+    "clean": "npm cache clean && npm run rimraf -- node_modules lib",
+    "clean:dist": "npm run rimraf -- lib",
+    "watch": "npm run tsc -- --w",
+    "prebuild": "npm run clean:dist",
+    "build": "npm run tsc",
+    "version": "npm run build",
+    "postversion": "git push && git push --tags && npm publish"
   },
   "keywords": [
     "actionscript",
@@ -22,35 +28,51 @@
     "typescript",
     "compiler"
   ],
-  "publishConfig":{
+  "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/GoodgameStudios/as3-to-ts.git"
+    "url": "git://github.com/as3web/as3-to-ts.git"
   },
   "bugs": {
-    "url": "https://github.com/GoodgameStudios/as3-to-ts/issues"
+    "url": "https://github.com/as3web/as3-to-ts/issues"
   },
   "author": "François de Campredon <francois.de.campredon@gmail.com>",
-  "contributors": [{
-    "name": "Endel Dreyer"
-  }, {
-    "name": "Simon Buchan"
-  }],
+  "contributors": [
+    {
+      "name": "Endel Dreyer"
+    },
+    {
+      "name": "Simon Buchan"
+    },
+    {
+      "name": "Ushan"
+    }
+  ],
   "license": "Apache-2.0",
   "dependencies": {
-    "fs-extra": "^0.24.0",
-    "minimist": "^1.2.0",
-    "object-assign": "^4.0.1",
-    "readline-sync": "^1.4.4",
-    "sax": "~0.6.0"
+    "colors": "^1.4.0",
+    "fs-extra": "^9.0.0",
+    "minimist": "^1.2.5",
+    "object-assign": "^4.1.1",
+    "readline-sync": "^1.4.10",
+    "sax": "^1.2.4"
   },
   "devDependencies": {
-    "diff": "^2.2.1",
-    "source-map-support": "^0.3.2",
-    "tslint": "^2.5.1",
-    "typescript": "^1.5.3",
-    "typings": "^1.3.2"
+    "@types/fs-extra": "^8.1.0",
+    "@types/minimist": "^1.2.0",
+    "@types/node": "^13.9.8",
+    "@types/object-assign": "^4.0.30",
+    "@types/readline-sync": "^1.4.3",
+    "@types/sax": "^1.2.1",
+    "@typescript-eslint/eslint-plugin": "^2.26.0",
+    "@typescript-eslint/parser": "^2.26.0",
+    "diff": "^4.0.2",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.1",
+    "eslint-plugin-prettier": "^3.1.2",
+    "prettier": "^2.0.2",
+    "typescript": "^3.8.3"
   }
 }
